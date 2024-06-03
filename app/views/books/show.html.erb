@@ -1,3 +1,5 @@
+<!-- app/views/books/show.html.erb -->
+
 <h1><%= @book.title %></h1>
 
 <p>
@@ -24,6 +26,14 @@
   <strong>Available Copies:</strong>
   <%= @book.available_copies %>
 </p>
+
+<% if user_signed_in? && current_user.member? %>
+  <% if @book.available_for_borrowing? && !current_user.borrowings.where(book: @book, returned: false).exists? %>
+    <%= link_to 'Borrow this book', borrowings_path(book_id: @book.id), method: :post %>
+  <% else %>
+    <p>This book is not available for borrowing or you have already borrowed it.</p>
+  <% end %>
+<% end %>
 
 <%= link_to 'Edit', edit_book_path(@book) if current_user.librarian? %> |
 <%= link_to 'Back', books_path %>

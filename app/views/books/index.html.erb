@@ -1,9 +1,15 @@
+<!-- app/views/books/index.html.erb -->
+
 <h1>Books</h1>
 
 <%= form_with url: books_path, method: :get, local: true do |form| %>
   <div class="field">
     <%= form.label :query, "Search Books" %>
     <%= form.text_field :query, value: params[:query] %>
+  </div>
+  <div class="field">
+    <%= form.label :search_by, "Search By" %>
+    <%= form.select :search_by, options_for_select([['Title', 'title'], ['Author', 'author'], ['Genre', 'genre']], params[:search_by]) %>
   </div>
   <div class="actions">
     <%= form.submit "Search" %>

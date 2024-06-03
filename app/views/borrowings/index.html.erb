@@ -1,3 +1,5 @@
+<!-- app/views/borrowings/index.html.erb -->
+
 <h1>My Borrowings</h1>
 
 <table>
@@ -7,16 +9,23 @@
       <th>Borrowed At</th>
       <th>Due At</th>
       <th>Returned</th>
+      <% if current_user.librarian? %>
+        <th>Actions</th>
+      <% end %>
     </tr>
   </thead>
-
   <tbody>
     <% @borrowings.each do |borrowing| %>
       <tr>
         <td><%= borrowing.book.title %></td>
         <td><%= borrowing.borrowed_at %></td>
         <td><%= borrowing.due_at %></td>
-        <td><%= borrowing.returned %></td>
+        <td><%= borrowing.returned ? 'Yes' : 'No' %></td>
+        <% if current_user.librarian? && !borrowing.returned %>
+          <td>
+            <%= link_to 'Mark as Returned', borrowing_path(borrowing), method: :patch %>
+          </td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

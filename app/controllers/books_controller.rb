@@ -7,10 +7,16 @@ class BooksController < ApplicationController
 
   def index
     @books = policy_scope(Book)
-    return unless params[:query].present?
+    return unless params[:query].present? && params[:search_by].present?
 
-    @books = @books.where('LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(genre) LIKE ?',
-                          "%#{params[:query].downcase}%", "%#{params[:query].downcase}%", "%#{params[:query].downcase}%")
+    case params[:search_by]
+    when 'title'
+      @books = @books.where('LOWER(title) LIKE ?', "%#{params[:query].downcase}%")
+    when 'author'
+      @books = @books.where('LOWER(author) LIKE ?', "%#{params[:query].downcase}%")
+    when 'genre'
+      @books = @books.where('LOWER(genre) LIKE ?', "%#{params[:query].downcase}%")
+    end
   end
 
   def show

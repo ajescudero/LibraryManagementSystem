@@ -1,3 +1,5 @@
+# app/controllers/borrowings_controller.rb
+
 class BorrowingsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_borrowing, only: %i[update destroy]
@@ -8,16 +10,24 @@ class BorrowingsController < ApplicationController
   end
 
   def create
-    @borrowing_service = BorrowBookService.new(current_user, Book.find(params[:book_id]))
-    if @borrowing_service.call
-      redirect_to borrowings_path, notice: 'Book was successfully borrowed.'
+    book = Book.find(params[:book_id])
+    if book.available_for_borrowing? && !current_user.borrowings.where(book:, returned: false).exists?
+      @borrowing = current_user.borrowings.build(book:, borrowed_at: Time.current, due_at: 2.weeks.from_now,
+                                                 returned: false)
+      if @borrowing.save
+        book.update(available_copies: book.available_copies - 1)
+        redirect_to borrowings_path, notice: 'Book was successfully borrowed.'
+      else
+        redirect_to books_path, alert: 'Could not borrow the book.'
+      end
     else
-      redirect_to books_path, alert: 'Book is not available for borrowing.'
+      redirect_to books_path, alert: 'Book is not available for borrowing or you have already borrowed it.'
     end
   end
 
   def update
     if @borrowing.update(returned: true)
+      @borrowing.book.update(available_copies: @borrowing.book.available_copies + 1)
       redirect_to borrowings_path, notice: 'Book was successfully returned.'
     else
       render :edit
@@ -26,17 +36,13 @@ class BorrowingsController < ApplicationController
 
   def destroy
     @borrowing.destroy
-    redirect_to borrowings_path, notice: 'Borrowing was successfully destroyed.'
+    redirect_to borrowings_url, notice: 'Borrowing was successfully destroyed.'
   end
 
   private
 
   def set_borrowing
     @borrowing = Borrowing.find(params[:id])
-  end
-
-  def borrowing_params
-    params.require(:borrowing).permit(:book_id)
   end
 
   def authorize_librarian!
