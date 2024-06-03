@@ -1,8 +1,8 @@
+# app/controllers/application_controller.rb
 # frozen_string_literal: true
 
-# app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  include Pundit
+  include Pundit::Authorization
 
   # Ensure Pundit is used to handle authorization exceptions
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized

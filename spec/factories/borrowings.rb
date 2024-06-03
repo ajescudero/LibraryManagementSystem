@@ -1,9 +1,11 @@
+# spec/factories/borrowings.rb
+
 FactoryBot.define do
   factory :borrowing do
-    user { nil }
-    book { nil }
-    borrowed_at { "2024-06-02 21:43:42" }
-    due_at { "2024-06-02 21:43:42" }
+    association :user
+    association :book
+    borrowed_at { Time.current }
+    due_at { 2.weeks.from_now }
     returned { false }
   end
 end
