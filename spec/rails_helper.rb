@@ -73,4 +73,8 @@ RSpec.configure do |config|
 
   # Additional Devise configuration
   config.include Devise::Test::ControllerHelpers, type: :controller
+
+  config.include Rails::Controller::Testing::TemplateAssertions
+  config.include Rails::Controller::Testing::Integration
+  config.include Rails::Controller::Testing::TestProcess
 end
