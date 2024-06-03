@@ -5,6 +5,7 @@ FactoryBot.define do
     email { Faker::Internet.email }
     password { 'password' }
     password_confirmation { 'password' }
+    role { 'member' }
 
     trait :librarian do
       role { 'librarian' }
