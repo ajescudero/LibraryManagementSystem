@@ -1,6 +1,6 @@
 class BorrowingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_borrowing, only: %i[show update destroy]
+  before_action :set_borrowing, only: %i[update destroy]
   before_action :authorize_librarian!, only: %i[update destroy]
 
   def index
@@ -8,20 +8,17 @@ class BorrowingsController < ApplicationController
   end
 
   def create
-    @borrowing = current_user.borrowings.build(borrowing_params)
-    @borrowing.borrowed_at = Time.current
-    @borrowing.due_at = 2.weeks.from_now
-
-    if @borrowing.save
-      redirect_to @borrowing, notice: 'Book was successfully borrowed.'
+    @borrowing_service = BorrowBookService.new(current_user, Book.find(params[:book_id]))
+    if @borrowing_service.call
+      redirect_to borrowings_path, notice: 'Book was successfully borrowed.'
     else
-      render :new
+      redirect_to books_path, alert: 'Book is not available for borrowing.'
     end
   end
 
   def update
     if @borrowing.update(returned: true)
-      redirect_to @borrowing, notice: 'Book was successfully returned.'
+      redirect_to borrowings_path, notice: 'Book was successfully returned.'
     else
       render :edit
     end
@@ -29,7 +26,7 @@ class BorrowingsController < ApplicationController
 
   def destroy
     @borrowing.destroy
-    redirect_to borrowings_url, notice: 'Borrowing was successfully destroyed.'
+    redirect_to borrowings_path, notice: 'Borrowing was successfully destroyed.'
   end
 
   private
