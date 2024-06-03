@@ -1,0 +1,117 @@
+<!-- app/views/dashboards/show.html.erb -->
+
+<% if current_user.librarian? %>
+  <h1>Librarian Dashboard</h1>
+  <p>Total Books: <%= @total_books %></p>
+  <p>Total Borrowed Books: <%= @total_borrowed_books %></p>
+  <p>Books Due Today: <%= @books_due_today.count %></p>
+
+  <h2>Books Due Today</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Borrowed By</th>
+        <th>Due Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @books_due_today.each do |borrowing| %>
+        <tr>
+          <td><%= borrowing.book.title %></td>
+          <td><%= borrowing.user.email %></td>
+          <td><%= borrowing.due_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Borrowed Books</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Borrowed By</th>
+        <th>Borrowed At</th>
+        <th>Due Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @borrowed_books.each do |borrowing| %>
+        <tr>
+          <td><%= borrowing.book.title %></td>
+          <td><%= borrowing.user.email %></td>
+          <td><%= borrowing.borrowed_at %></td>
+          <td><%= borrowing.due_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Members with Overdue Books</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Overdue Books</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @overdue_members.each do |member| %>
+        <tr>
+          <td><%= member.name %></td>
+          <td><%= member.email %></td>
+          <td>
+            <ul>
+              <% member.borrowings.where(returned: false).where('due_at < ?', Date.today).each do |borrowing| %>
+                <li><%= borrowing.book.title %> (Due: <%= borrowing.due_at %>)</li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <h1>Member Dashboard</h1>
+  <h2>Books I've Borrowed</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Borrowed At</th>
+        <th>Due At</th>
+        <th>Returned</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @borrowings.each do |borrowing| %>
+        <tr>
+          <td><%= borrowing.book.title %></td>
+          <td><%= borrowing.borrowed_at %></td>
+          <td><%= borrowing.due_at %></td>
+          <td><%= borrowing.returned ? 'Yes' : 'No' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Overdue Books</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Due At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @overdue_books.each do |borrowing| %>
+        <tr>
+          <td><%= borrowing.book.title %></td>
+          <td><%= borrowing.due_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

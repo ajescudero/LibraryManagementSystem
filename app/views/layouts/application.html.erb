@@ -1,33 +1,29 @@
+<!-- app/views/layouts/application.html.erb -->
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Library Management System</title>
+  <title>LibraryManagementSystem</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_importmap_tags %>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Library Management System</a>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <% if user_signed_in? %>
-          <li class="nav-item">
-            <%= button_to 'Sign Out', destroy_user_session_path, method: :delete, class: "nav-link" %>
-          </li>
-        <% else %>
-          <li class="nav-item">
-            <%= button_to 'Sign In', new_user_session_path, class: "nav-link" %>
-          </li>
-          <li class="nav-item">
-            <%= button_to 'Sign Up', new_user_registration_path, class: "nav-link" %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
+  <nav>
+    <% if user_signed_in? %>
+      <p>Logged in as: <%= current_user.email %></p>
+      <% if current_page?(dashboard_path) %>
+        <%= link_to 'Book List', books_path %> |
+      <% else %>
+        <%= link_to 'Dashboard', dashboard_path %> |
+      <% end %>
+      <%= link_to 'Sign Out', destroy_user_session_path, method: :delete %>
+    <% else %>
+      <%= link_to 'Sign In', new_user_session_path %> |
+      <%= link_to 'Sign Up', new_user_registration_path %>
+    <% end %>
   </nav>
 
   <%= yield %>

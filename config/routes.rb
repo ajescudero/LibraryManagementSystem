@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'dashboards/show'
   devise_for :users
   resources :books
   resources :borrowings, only: %i[index create update destroy]
@@ -9,6 +10,8 @@ Rails.application.routes.draw do
       resources :borrowings, only: %i[index create update destroy]
     end
   end
+
+  get 'dashboard', to: 'dashboards#show', as: 'dashboard'
 
   root 'books#index'
 end
