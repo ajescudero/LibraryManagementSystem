@@ -1,5 +1,14 @@
-<!-- app/views/books/index.html.erb -->
 <h1>Books</h1>
+
+<%= form_with url: books_path, method: :get, local: true do |form| %>
+  <div class="field">
+    <%= form.label :query, "Search Books" %>
+    <%= form.text_field :query, value: params[:query] %>
+  </div>
+  <div class="actions">
+    <%= form.submit "Search" %>
+  </div>
+<% end %>
 
 <% if current_user.librarian? %>
   <%= link_to 'New Book', new_book_path %>

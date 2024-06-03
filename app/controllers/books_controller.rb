@@ -1,3 +1,5 @@
+# app/controllers/books_controller.rb
+
 class BooksController < ApplicationController
   before_action :authenticate_user!
   before_action :set_book, only: %i[show edit update destroy]
@@ -5,6 +7,10 @@ class BooksController < ApplicationController
 
   def index
     @books = policy_scope(Book)
+    return unless params[:query].present?
+
+    @books = @books.where('LOWER(title) LIKE ? OR LOWER(author) LIKE ? OR LOWER(genre) LIKE ?',
+                          "%#{params[:query].downcase}%", "%#{params[:query].downcase}%", "%#{params[:query].downcase}%")
   end
 
   def show
@@ -46,6 +52,7 @@ class BooksController < ApplicationController
   end
 
   private
+
   def set_book
     @book = Book.find(params[:id])
   end
