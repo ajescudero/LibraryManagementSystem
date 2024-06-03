@@ -1,0 +1,23 @@
+<h1>My Borrowings</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Book</th>
+      <th>Borrowed At</th>
+      <th>Due At</th>
+      <th>Returned</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @borrowings.each do |borrowing| %>
+      <tr>
+        <td><%= borrowing.book.title %></td>
+        <td><%= borrowing.borrowed_at %></td>
+        <td><%= borrowing.due_at %></td>
+        <td><%= borrowing.returned %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

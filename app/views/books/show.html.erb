@@ -1,0 +1,29 @@
+<h1><%= @book.title %></h1>
+
+<p>
+  <strong>Author:</strong>
+  <%= @book.author %>
+</p>
+
+<p>
+  <strong>Genre:</strong>
+  <%= @book.genre %>
+</p>
+
+<p>
+  <strong>ISBN:</strong>
+  <%= @book.isbn %>
+</p>
+
+<p>
+  <strong>Total Copies:</strong>
+  <%= @book.total_copies %>
+</p>
+
+<p>
+  <strong>Available Copies:</strong>
+  <%= @book.available_copies %>
+</p>
+
+<%= link_to 'Edit', edit_book_path(@book) if current_user.librarian? %> |
+<%= link_to 'Back', books_path %>

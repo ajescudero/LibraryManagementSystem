@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'borrowings/index'
+  get 'borrowings/create'
+  get 'books/index'
+  get 'books/show'
+  get 'books/new'
+  get 'books/edit'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
