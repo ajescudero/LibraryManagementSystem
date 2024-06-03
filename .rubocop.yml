@@ -1,0 +1,9 @@
+AllCops:
+  Exclude:
+    - 'db/schema.rb'
+    - 'bin/*'
+    - 'node_modules/**/*'
+    - 'config/environments/*'
+    - 'config/initializers/*'
+Layout/LineLength:
+  Max: 120
